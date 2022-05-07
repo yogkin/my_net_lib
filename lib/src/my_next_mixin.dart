@@ -12,6 +12,11 @@ abstract class MYBaseNetMixin implements IMYLoading {
 
   ///通用post请求
   ///
+  ///[api]请求地址
+  ///[params]请求参数
+  ///[isShowLoading]是否显示加载框
+  ///[options]请求配置
+  ///
   Future doPost(String api,
       {params, dynamic data, withLoading = true, Options options}) async {
     if (withLoading) {
@@ -35,6 +40,10 @@ abstract class MYBaseNetMixin implements IMYLoading {
   }
 
   ///通用get请求
+  ///
+  ///[api] 请求地址
+  ///[params] 请求参数
+  ///[withLoading] 是否显示加载中
   ///
   Future doGet<T extends MYNetBeanMixin>(String api,
       {params, withLoading = true}) async {
