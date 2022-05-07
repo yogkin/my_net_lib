@@ -22,7 +22,7 @@ abstract class MYBaseNetMixin implements IMYLoading {
       options = options ?? Options();
       options.contentType = 'application/json';
       response =
-          await httpClient().post(api, data: params ?? data, options: options);
+      await httpClient().post(api, data: params ?? data, options: options);
     } on DioError catch (e) {
       debugPrint('DioError: ${e.hashCode} $e');
       return resultError(e.message);
@@ -36,8 +36,8 @@ abstract class MYBaseNetMixin implements IMYLoading {
 
   ///通用get请求
   ///
-  Future doGet(String api,
-      {params, withLoading = true, withRefreshComplete = false}) async {
+  Future doGet<T extends MYNetBeanMixin>(String api,
+      {params, withLoading = true}) async {
     if (withLoading) {
       showLoading();
     }
@@ -60,3 +60,13 @@ abstract class MYBaseNetMixin implements IMYLoading {
     throw NotSuccessException('出错了 $errorMsg');
   }
 }
+
+///解析的实体类，需要继承[MYNetBeanMixin]
+///
+///
+abstract class MYNetBeanMixin {
+  Map<String, dynamic> toJson();
+
+  fromJson(dynamic json);
+}
+
