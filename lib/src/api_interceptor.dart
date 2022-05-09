@@ -14,11 +14,7 @@ parseJson(String text) {
 /// http 基类
 ///
 abstract class BaseHttp extends DioForNative {
-  BaseHttp() {
-    init();
-  }
 
-  void init();
 }
 
 

@@ -45,7 +45,7 @@ abstract class MYBaseNetMixin implements IMYLoading {
   ///[params] 请求参数
   ///[withLoading] 是否显示加载中
   ///
-  Future doGet<T extends MYNetBeanMixin>(String api,
+  Future doGet(String api,
       {params, withLoading = true}) async {
     if (withLoading) {
       showLoading();

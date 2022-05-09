@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -30,8 +29,7 @@ class MYHttp extends BaseHttp {
   ///读取超时时间
   int receiveTimeout;
 
-  @override
-  void init() {
+  void build() {
     if (baseUrl == null) {
       throw new Exception("baseUrl 不能为空");
     }
@@ -58,6 +56,7 @@ class MYHttp extends BaseHttp {
     //添加必要拦截器
     interceptors.add(ApiInterceptor(
         connectTimeout: connectTimeout, receiveTimeout: receiveTimeout));
+
   }
 }
 
@@ -71,36 +70,6 @@ class ApiInterceptor extends InterceptorsWrapper {
 
   @override
   Future onResponse(Response response) async {
-    if (response.data is Map<dynamic, dynamic>) {
-      debugPrint('type::map');
-      MYRespModel respData = MYRespModel.fromJson(response.data);
-      if (respData.success) {
-        response.data = respData.data;
-        return response;
-      } else {
-        debugPrint('response.request.path:${response.request.path}');
-
-        // 如果token过期
-        if (respData.code == -1) {}
-        // 异常信息，抛出异常
-        throw NotSuccessException.fromRespData(respData);
-      }
-    } else if (response.data is String) {
-      debugPrint('type::String');
-      Map<String, dynamic> jsonData = jsonDecode(response.data);
-      MYRespModel respData = MYRespModel.fromJson(jsonData);
-      if (respData.success) {
-        response.data = respData.data;
-        return response;
-      } else {
-        // 如果token过期
-        // 异常信息
-        throw NotSuccessException.fromRespData(respData);
-      }
-    } else {
-      debugPrint('type::other');
-      return response;
-    }
   }
 
   @override
@@ -112,20 +81,5 @@ class ApiInterceptor extends InterceptorsWrapper {
       options.receiveTimeout = receiveTimeout;
     }
     return super.onRequest(options);
-  }
-}
-
-/// api顶层响应类
-///
-class MYRespModel extends BaseRespModel {
-  @override
-  bool get success => 200 == code || 0 == code;
-
-  MYRespModel({code, msg, data}) : super(code: code, message: msg, data: data);
-
-  MYRespModel.fromJson(Map<String, dynamic> json) : super.create() {
-    code = json['code'];
-    message = json['message'];
-    data = json['data'];
   }
 }
