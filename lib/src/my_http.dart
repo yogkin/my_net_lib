@@ -13,7 +13,8 @@ import 'api_interceptor.dart';
 ///   ..proxyIp = "192.168.3.1:8888"
 ///   ..connectTimeout = 5000
 ///   ..receiveTimeout = 3000
-///   ..interceptors.add(ApiInterceptor());
+///   ..interceptors.add(ApiInterceptor())
+///   .build();
 ///
 ///
 class MYHttp extends BaseHttp {
