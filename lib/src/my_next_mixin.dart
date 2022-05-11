@@ -1,11 +1,12 @@
 import 'package:flutter/foundation.dart';
 
 import 'api_interceptor.dart';
+import 'http_code.dart';
 import 'i_my_loading.dart';
 import 'my_http.dart';
+import 'my_http_exception.dart';
 
 ///网络请求 混合类[MYBaseNetMixin]
-///
 ///
 abstract class MYBaseNetMixin implements IMYLoading {
   MYHttp httpClient();
@@ -29,11 +30,11 @@ abstract class MYBaseNetMixin implements IMYLoading {
       response =
           await httpClient().post(api, data: params ?? data, options: options);
     } on DioError catch (e) {
-      debugPrint('DioError: ${e.hashCode} $e');
-      return resultHttpError(e.message);
+      debugPrint('DioError: ${e.toString()} $e');
+      return resultHttpError(HttpCode.httpRequestFailure, e.message);
     } catch (e, _) {
       debugPrint('DioError: ${e.hashCode} $e');
-      return resultHttpError(e.message);
+      return resultHttpError(HttpCode.httpRequestFailure, e.message);
     } finally {
       if (withLoading) {
         hideLoading();
@@ -56,10 +57,10 @@ abstract class MYBaseNetMixin implements IMYLoading {
     try {
       response = await httpClient().get(api, queryParameters: params);
     } on DioError catch (e) {
-      return resultHttpError(e.message);
+      return resultHttpError(HttpCode.httpRequestFailure, e.message);
     } catch (e, _) {
       debugPrint('DioError: ${e.hashCode} $e');
-      return resultHttpError(e.message);
+      return resultHttpError(HttpCode.httpRequestFailure, e.message);
     } finally {
       if (withLoading) {
         hideLoading();
@@ -71,9 +72,9 @@ abstract class MYBaseNetMixin implements IMYLoading {
 
   ///处理网络异常，比如连接失败、超时等
   ///
-  void resultHttpError(String errorMsg) {
+  Future resultHttpError(int code, String errorMsg) async {
     showToast(errorMsg);
-    throw NotSuccessException('出错了 $errorMsg');
+    throw MYHttpException(code, errorMsg);
   }
 }
 
